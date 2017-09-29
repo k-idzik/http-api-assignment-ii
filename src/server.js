@@ -24,7 +24,7 @@ const onRequest = (request, response) => {
         jsonHandler.getNotReal(request, response);
         break;
       default:
-        jsonHandler.notFound(request, response);
+        jsonHandler.getNotReal(request, response);
         break;
     }
   } else if (parsedUrl.pathname === '/getUsers' && request.method === 'HEAD') {
@@ -35,7 +35,7 @@ const onRequest = (request, response) => {
     // Also pass in the parsed URL for queries
     jsonHandler.getAddUser(request, response, query.parse(parsedUrl.query));
   } else {
-    jsonHandler.notFound(request, response);
+    jsonHandler.getNotReal(request, response);
   }
 };
 

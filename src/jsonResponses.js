@@ -60,6 +60,7 @@ const getUsersHead = (request, response) => {
 // notReal GET
 const getNotReal = (request, response) => {
   const JSONResponse = {
+    id: 'notFound',
     message: 'Message: The page you are looking for was not found.',
   };
 
@@ -91,6 +92,11 @@ const getAddUser = (request, response, params) => {
     return respondJSON(request, response, 400, JSONResponse);
   }
 
+  // User already exists
+  if (users[newUser.name]) {
+    return respondJSONHead(request, response, 204); // 204
+  }
+
   users[newUser.name] = newUser; // Add the user
 
   etag = crypto.createHash('sha1').update(JSON.stringify(users)); // Create a new hash object
@@ -99,17 +105,10 @@ const getAddUser = (request, response, params) => {
   return respondJSON(request, response, 201, JSONResponse); // 201
 };
 
-// notFound GET
-const notFound = (request, response) => {
-  // 404
-  respondJSONHead(request, response, 404);
-};
-
 module.exports = {
   getUsers,
   getUsersHead,
   getNotReal,
   getNotRealHead,
   getAddUser,
-  notFound,
 };
