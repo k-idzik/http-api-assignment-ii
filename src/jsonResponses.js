@@ -1,28 +1,30 @@
 // Node's built-in cryptography module.
 const crypto = require('crypto');
 
-// This object is purely in memory
+// Users object, stored in memory
 const users = {};
 
 // SHA-1 is a bit of a quicker hash algorithm for insecure things
 let etag = crypto.createHash('sha1').update(JSON.stringify(users));
-// Grab the hash as a hex string
+// Get the hash as a hex string
 let digest = etag.digest('hex');
 
 // Responding to GET
 const respondJSON = (request, response, status, object) => {
+  // Response header
   const headers = {
     'Content-Type': 'application/json',
     etag: digest,
   };
 
-  response.writeHead(status, headers);
-  response.write(JSON.stringify(object));
+  response.writeHead(status, headers); // Write the header
+  response.write(JSON.stringify(object)); // Write the data
   response.end();
 };
 
 // Responding to HEAD
 const respondJSONHead = (request, response, status) => {
+  // Response header
   const headers = {
     'Content-Type': 'application/json',
     etag: digest,
@@ -39,7 +41,7 @@ const getUsers = (request, response) => {
     users,
   };
 
-  // Client etag
+  // Client etag, checks if anything has changed
   if (request.headers['if-none-match'] === digest) {
     return respondJSONHead(request, response, 304); // 304, already have file
   }
@@ -49,7 +51,7 @@ const getUsers = (request, response) => {
 
 // getUsers HEAD
 const getUsersHead = (request, response) => {
-  // Client etag
+  // Client etag, checks if anything has changed
   if (request.headers['if-none-match'] === digest) {
     return respondJSONHead(request, response, 304); // 304, already have file
   }
@@ -97,7 +99,7 @@ const getAddUser = (request, response, params) => {
     return respondJSONHead(request, response, 204); // 204
   }
 
-  users[newUser.name] = newUser; // Add the user
+  users[newUser.name] = newUser; // Add the user, indexes by the user's name
 
   etag = crypto.createHash('sha1').update(JSON.stringify(users)); // Create a new hash object
   digest = etag.digest('hex'); // Recalculate the hash digest for the etag

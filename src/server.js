@@ -1,6 +1,6 @@
 const http = require('http');
-const url = require('url');
-const query = require('querystring');
+const url = require('url'); // URL parsing
+const query = require('querystring'); // Parsing queries from the URL
 const htmlHandler = require('./htmlResponses.js');
 const jsonHandler = require('./jsonResponses.js');
 
@@ -9,6 +9,7 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 const onRequest = (request, response) => {
   const parsedUrl = url.parse(request.url); // Parse the URL
 
+  // GET, HEAD, and POST requests
   if (request.method === 'GET') {
     switch (parsedUrl.pathname) {
       case '/' || '/index.html':
