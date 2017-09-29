@@ -1,0 +1,30 @@
+{
+  "name": "http-api-assignment-ii",
+  "version": "1.0.0",
+  "engines": {
+    "node": "8.4.0",
+    "npm": "5.3.0"
+  },
+  "description": "HTTP API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/k-idzik/http-api-assignment-ii.git"
+  },
+  "author": "Kevin Idzik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/k-idzik/http-api-assignment-ii/issues"
+  },
+  "homepage": "https://github.com/k-idzik/http-api-assignment-ii#readme",
+  "devDependencies": {
+    "eslint": "^4.7.2",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0"
+  }
+}

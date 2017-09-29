@@ -6,7 +6,95 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
+    const handleResponses = (xhr, parseResponse) => {
+        const content = document.querySelector('#content');
+        
+        switch(xhr.status) {
+            case 200: //200 Success
+              content.innerHTML = `<b>Success</b>`;
+              break;
+            case 201: //201 Created
+              content.innerHTML = `<b>Create</b>`;
+              break;
+            case 204: //204 Updated
+              content.innerHTML = `<b>Updated (No Content)</b>`;
+              break;
+            case 304: //304 Not Modified
+              content.innerHTML = '<b>Not Modified</b>';
+              break;
+            case 400: //400 Bad Request
+              content.innerHTML = `<b>Bad Request</b>`;
+              break;
+            case 404: //404 Not Found
+              content.innerHTML = `<b>Resource Not Found</b>`;
+              break;
+            default:
+              content.innerHTML = `Error code not implemented by client.`;
+              break;
+      }
+        
+      //If we are expecting a response from a GET or POST
+      if (parseResponse) {
+          if (xhr.status === 200)
+            content.innerHTML += `<p>${xhr.response}</p>`;
+          else
+            content.innerHTML += `<p>${JSON.parse(xhr.response).message}</p>`;
+          
+          console.dir(JSON.parse(xhr.response));
+      }
+    };
 
+    const requestUpdate = (e, form) => {
+      let method = form.method; //Get the method type
+      let url = form.action; //Get the type of action from the url
+
+      if (form.id === 'userForm') {
+          //GET or HEAD
+          //Since this is fetching data, update with the correct information
+          method = document.querySelector('#methodSelect').value;
+          url = document.querySelector('#urlField').value;
+      }
+      else {
+          //POST
+          //Append the information from the forms to the URL object
+          url += `?name=${document.querySelector('#nameField').value}`;
+          url += `&age=${document.querySelector('#ageField').value}`;
+      }
+
+      const xhr = new XMLHttpRequest(); //AJAX request
+
+      xhr.open(method, url); //Connect using the method and url
+
+      xhr.setRequestHeader('Accept', 'application/json'); //Set the accept header
+
+      //GET, HEAD and POST requests
+      if (method == 'get' || method == 'post') {
+        xhr.onload = () => handleResponses(xhr, true); //Parse the GET or POST request and get the JSON message
+      } 
+      else {
+        xhr.onload = () => handleResponses(xhr, false); //HEAD request, check the metadata
+      }
+      
+      xhr.send(); //Send the AJAX request
+      
+      e.preventDefault(); //Cancel the browser's default action
+    
+      return false; //Stop the page from redirecting from the form
+    };
+
+    const init = () => {
+        //Get forms
+        const nameForm = document.querySelector('#nameForm');
+        const userForm = document.querySelector('#userForm');
+        
+        const addUsers = (e) => requestUpdate(e, nameForm); //Handles requests to add users
+        const getUsers = (e) => requestUpdate(e, userForm); //Handles requests to get users
+        
+        nameForm.addEventListener('submit', addUsers); //Listen for when the form is submitted
+        userForm.addEventListener('submit', getUsers); //Listen for when the form is submitted
+    };
+
+window.onload = init;
   </script>
 </head>
 <body>
